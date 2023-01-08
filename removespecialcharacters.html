@@ -36,6 +36,9 @@
 			// Join the output lines back into a single string
 			var outputValue = outputLines.join("\n");
 			
+			// Replace multiple consecutive newline characters with a single newline character
+			outputValue = outputValue.replace(/\n{2,}/g, "\n\n");
+			
 			// Set the value of the output textarea to the modified string
 			output.value = outputValue;
 		}
