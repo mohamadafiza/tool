@@ -1,0 +1,19 @@
+<!-- HTML -->
+<textarea id="input" rows="10" cols="30"></textarea>
+<br>
+<button id="button">Remove Multiple Whitespace</button>
+<pre id="output"></pre>
+
+<script>
+// JavaScript
+let input = document.querySelector('#input');
+let button = document.querySelector('#button');
+let output = document.querySelector('#output');
+
+button.addEventListener('click', function() {
+  let str = input.value;
+  str = str.replace(/[ \t]+/g, ' ');  // Replace multiple spaces or tabs with a single space
+  output.textContent = str;
+});
+
+</script>
