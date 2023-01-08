@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Remove Special Characters</title>
+</head>
+<body>
+	<textarea id="input" rows="10" cols="50"></textarea>
+	<br>
+	<button onclick="removeSpecialCharacters()">Remove Special Characters</button>
+	<br>
+	<textarea id="output" rows="10" cols="50"></textarea>
+	<br>
+	<button onclick="copyToClipboard()">Copy to Clipboard</button>
+	
+	<script>
+		function removeSpecialCharacters() {
+			// Get the input and output textarea elements
+			var input = document.getElementById("input");
+			var output = document.getElementById("output");
+			
+			// Get the value of the input textarea
+			var inputValue = input.value;
+			
+			// Split the input value into an array of lines
+			var lines = inputValue.split("\n");
+			
+			// Loop through each line and remove special characters
+			var outputLines = [];
+			for (var i = 0; i < lines.length; i++) {
+				var line = lines[i];
+				var outputLine = line.replace(/[^a-zA-Z0-9 ]/g, "");
+				outputLine = outputLine.replace(/\s+/g, " ");  // Replace multiple spaces or tabs with a single space
+				outputLines.push(outputLine);
+			}
+			
+			// Join the output lines back into a single string
+			var outputValue = outputLines.join("\n");
+			
+			// Set the value of the output textarea to the modified string
+			output.value = outputValue;
+		}
+		
+		function copyToClipboard() {
+			// Get the output textarea element
+			var output = document.getElementById("output");
+			
+			// Select the output text
+			output.select();
+			
+			// Copy the selected text to the clipboard
+			document.execCommand("copy");
+		}
+	</script>
+</body>
+</html>
