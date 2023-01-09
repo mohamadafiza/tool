@@ -1,58 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Remove Special Characters</title>
-</head>
-<body>
-	<textarea id="input" rows="10" cols="50"></textarea>
-	<br>
-	<button onclick="removeSpecialCharacters()">Remove Special Characters</button>
-	<br>
-	<textarea id="output" rows="10" cols="50"></textarea>
-	<br>
-	<button onclick="copyToClipboard()">Copy to Clipboard</button>
-	
-	<script>
-		function removeSpecialCharacters() {
-			// Get the input and output textarea elements
-			var input = document.getElementById("input");
-			var output = document.getElementById("output");
-			
-			// Get the value of the input textarea
-			var inputValue = input.value;
-			
-			// Split the input value into an array of lines
-			var lines = inputValue.split("\n");
-			
-			// Loop through each line and remove special characters
-			var outputLines = [];
-			for (var i = 0; i < lines.length; i++) {
-				var line = lines[i];
-				var outputLine = line.replace(/[^a-zA-Z0-9 ]/g, "");
-				outputLine = outputLine.replace(/\s+/g, " ");  // Replace multiple spaces or tabs with a single space
-				outputLines.push(outputLine);
-			}
-			
-			// Join the output lines back into a single string
-			var outputValue = outputLines.join("\n");
-			
-			// Replace multiple consecutive newline characters with a single newline character
-			outputValue = outputValue.replace(/\n{2,}/g, "\n\n");
-			
-			// Set the value of the output textarea to the modified string
-			output.value = outputValue;
-		}
-		
-		function copyToClipboard() {
-			// Get the output textarea element
-			var output = document.getElementById("output");
-			
-			// Select the output text
-			output.select();
-			
-			// Copy the selected text to the clipboard
-			document.execCommand("copy");
-		}
-	</script>
-</body>
-</html>
+<!-- HTML -->
+<textarea id="input" rows="10" cols="30"></textarea>
+<br>
+<button id="button">Remove Multiple Whitespace and Special Characters</button>
+<br>
+<textarea id="output" rows="10" cols="30" readonly></textarea>
+<br>
+<button id="copy-button">Copy to Clipboard</button>
+
+<script>
+// JavaScript
+let input = document.querySelector('#input');
+let button = document.querySelector('#button');
+let output = document.querySelector('#output');
+let copyButton = document.querySelector('#copy-button');
+
+button.addEventListener('click', function() {
+  let str = input.value;
+  str = str.replace(/[ \t]+/g, ' ');  // Replace multiple spaces or tabs with a single space
+  str = str.replace(/[^a-zA-Z0-9 \n]/g, '');  // Remove special characters except new lines
+
+  // Use a temporary div element to preserve the formatting
+  let div = document.createElement('div');
+  div.innerHTML = str;
+  str = div.innerText;
+  output.value = str;
+});
+
+copyButton.addEventListener('click', function() {
+  output.select();
+  document.execCommand('copy');
+});
+</script>
