@@ -25,7 +25,8 @@ let copyButton = document.querySelector('#copy-button');
 button.addEventListener('click', function() {
   let str = input.value;
   str = str.replace(/[ \t]+/g, ' ');  // Replace multiple spaces or tabs with a single space
-  str = str.replace(/[^a-zA-Z0-9 \n]/g, '');  // Remove special characters except new lines
+  // str = str.replace(/[^a-zA-Z0-9 \n]/g, '');  // Remove special characters except new lines
+  str = str.replace(/[^a-zA-Z0-9 \n,.]/g, ''); // Preserve Comma and Period
 
   // Use a temporary div element to preserve the formatting
   let div = document.createElement('div');
