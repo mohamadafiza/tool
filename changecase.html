@@ -6,7 +6,10 @@
     function convertCase(caseType) {
       var textArea = document.getElementById("textArea");
       var text = textArea.value;
-  var lowerCaseWords = ["a", "for", "so", "an", "in", "the", "and", "nor", "to", "at", "of", "up", "but", "on", "yet", "by", "or"];
+var lowerCaseWords = ["a", "for", "so", "an", "in", "the", "and", "nor", "to", "at", "of", "up", "but", "on", "yet", "by", "or"];
+for(var i = 0; i < lowerCaseWords.length; i++) {
+  lowerCaseWords[i] = lowerCaseWords[i].toLowerCase();
+}
       switch (caseType) {
         case "sentence":
           text = text.toLowerCase();
@@ -25,20 +28,43 @@
             return letter.toUpperCase();
           });
           break;
+          
 case "title":
-  text = text.toLowerCase();
-  text = text.replace(/(^|\s)[a-zA-Z]+(\s|$)/g, function(match) {
-    var word = match.trim();
-    if (lowerCaseWords.indexOf(word.toLowerCase()) === -1) {
-      return match.charAt(0).toUpperCase() + match.slice(1);
-    }
-    return match.toLowerCase();
-  });
-  break;
-  
+      var sentences = text.split(/[.!?]+/);
+      var isFirstSentence = true;
+      for (var i = 0; i < sentences.length; i++) {
+        var words = sentences[i].split(" ");
+        for (var j = 0; j < words.length; j++) {
+          var word = words[j];
+          var isFirstWord = (j === 0);
+          var isLowerCaseWord = lowerCaseWords.indexOf(word.toLowerCase()) !== -1;
+          if (isFirstSentence && isFirstWord) {
+            words[j] = word.charAt(0).toUpperCase() + word.slice(1);
+          } else if (isFirstWord || !isLowerCaseWord) {
+            words[j] = word.charAt(0).toUpperCase() + word.slice(1);
+                      } else {
+            if(word.toLowerCase() === word && isLowerCaseWord){
+                words[j] = word.toLowerCase();
+            }
+            else if(word !== word.toLowerCase() && word === word.charAt(0).toUpperCase() + word.slice(1) && isLowerCaseWord){
+                words[j] = word.toLowerCase();
+            }
+            else if(word !== word.toLowerCase() && !isLowerCaseWord) {
+                words[j] = word.charAt(0).toUpperCase() + word.slice(1);
+            }
+          }
         }
-      textArea.value = text;
-    }
+        sentences[i] = words.join(" ");
+        isFirstSentence = false;
+      }
+      text = sentences.join(".");
+      break;
+  }
+  textArea.value = text;
+}
+
+
+          
   
     function copyToClipboard() {
       var textArea = document.getElementById("textArea");
