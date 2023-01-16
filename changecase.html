@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text Case Converter Change</title>
+  <script>
+    function convertCase(caseType) {
+      var textArea = document.getElementById("textArea");
+      var text = textArea.value;
+  var lowerCaseWords = ["a", "for", "so", "an", "in", "the", "and", "nor", "to", "at", "of", "up", "but", "on", "yet", "by", "or"];
+      switch (caseType) {
+        case "sentence":
+          text = text.toLowerCase();
+          text = text.replace(/(^|\n)[a-z]/g, function(letter) {
+            return letter.toUpperCase();
+          });
+          break;
+        case "lower":
+          text = text.toLowerCase();
+          break;
+        case "upper":
+          text = text.toUpperCase();
+          break;
+        case "capitalized":
+          text = text.toLowerCase().replace(/(^|\s)[a-z]/g, function(letter) {
+            return letter.toUpperCase();
+          });
+          break;
+case "title":
+  text = text.toLowerCase();
+  text = text.replace(/(^|\s)[a-zA-Z]+(\s|$)/g, function(match) {
+    var word = match.trim();
+    if (lowerCaseWords.indexOf(word.toLowerCase()) === -1) {
+      return match.charAt(0).toUpperCase() + match.slice(1);
+    }
+    return match.toLowerCase();
+  });
+  break;
+  
+        }
+      textArea.value = text;
+    }
+  
+    function copyToClipboard() {
+      var textArea = document.getElementById("textArea");
+      textArea.select();
+      document.execCommand("copy");
+    }
+    
+   function clearText() {
+  var textArea = document.getElementById("textArea");
+  textArea.value = "";
+}
+
+    
+</script>
+</head>
+<body><center>
+<h1>Change Case</h1>
+  <textarea id="textArea" rows="20" cols="66"></textarea>
+  <br>
+  <button onclick="convertCase('sentence')">Sentence Case</button>
+  <button onclick="convertCase('lower')">Lower Case</button>
+  <button onclick="convertCase('upper')">UPPER CASE</button>
+  <button onclick="convertCase('capitalized')">Capitalized Case</button>
+  <button onclick="convertCase('title')">Title Case</button>
+  <br><br>
+  <button onclick="copyToClipboard()">Copy to Clipboard</button>
+  <button onclick="clearText()">Clear</button>
+</center></body>
+</html>
