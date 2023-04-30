@@ -5,36 +5,45 @@
   <title>Shopee Change Courier Form</title>
 </head>
 <body>
-  <h1>User Input</h1>
-  
-<a href="https://help.shopee.com.my/portal/webform/1cfc5ae2796b40a19da5a9e386e75c88" target="_blank">Shopee Change Courier Form</a>
-  
-  <div class="input">
-    <input type="text" id="input1" placeholder="Input 1" value="510114">
+  <h1>Shopee Change Courier Form</h1>
+  <a href="https://help.shopee.com.my/portal/webform/1cfc5ae2796b40a19da5a9e386e75c88" target="_blank">Shopee Change Courier Form</a>
+  <br><br>
+  <div>
+    <input type="text" id="input1" value="510114">
+    <button onclick="pasteInput1()">Paste</button>
     <button onclick="copyInput1()">Copy</button>
   </div>
-  <div class="input">
-    <input type="text" id="input2" placeholder="Order ID">
+  <br>
+  <div>
+    <input type="text" id="input2">
+    <button onclick="pasteInput2()">Paste</button>
     <button onclick="copyInput2()">Copy</button>
   </div>
   <script>
-    function copyInput1() {
-      var input1 = document.getElementById("input1").value;
-      var dummy = document.createElement("textarea");
-      document.body.appendChild(dummy);
-      dummy.textContent = input1;
-      dummy.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummy);
+    function pasteInput1() {
+      navigator.clipboard.readText().then(text => {
+        document.getElementById("input1").value = text;
+      }).catch(err => {
+        console.error('Failed to read clipboard contents: ', err);
+      });
     }
+    
+    function copyInput1() {
+      var input = document.getElementById("input1").value;
+      navigator.clipboard.writeText(input);
+    }
+    
+    function pasteInput2() {
+      navigator.clipboard.readText().then(text => {
+        document.getElementById("input2").value = text;
+      }).catch(err => {
+        console.error('Failed to read clipboard contents: ', err);
+      });
+    }
+    
     function copyInput2() {
-      var input2 = document.getElementById("input2").value;
-      var dummy = document.createElement("textarea");
-      document.body.appendChild(dummy);
-      dummy.textContent = input2;
-      dummy.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummy);
+      var input = document.getElementById("input2").value;
+      navigator.clipboard.writeText(input);
     }
   </script>
 </body>
