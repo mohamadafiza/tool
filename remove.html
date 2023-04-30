@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Remove Multiple Whitespace and Special Characters</title>
+</head>
+<body>
+  <center>
+    <textarea id="input" rows="10" cols="30"></textarea>
+    <br>
+    <input type="checkbox" id="special-characters"> Remove special characters
+    <br>
+    <label for="keep-chars">Characters to keep:</label>
+    <input type="text" id="keep-chars">
+    <br>
+    <br>
+    <button id="button">Remove Multiple Whitespace</button>
+    <br>
+    <br>
+    <textarea id="output" rows="10" cols="30" readonly></textarea>
+    <br>
+    <br>
+    <button id="copy-button">Copy to Clipboard</button>
+  </center>
+  <script>
+    let input = document.querySelector('#input');
+    let button = document.querySelector('#button');
+    let output = document.querySelector('#output');
+    let copyButton = document.querySelector('#copy-button');
+    let specialCharactersCheckbox = document.querySelector('#special-characters');
+    let keepCharsInput = document.querySelector('#keep-chars');
+    button.addEventListener('click', function() {
+      let str = input.value;
+      // Replace multiple spaces or tabs with a single space
+      str = str.replace(/[ \t]+/g, ' ');
+
+      // If the "Remove special characters" checkbox is checked, remove all special characters
+      if (specialCharactersCheckbox.checked) {
+        let keepChars = keepCharsInput.value.trim();
+        // Add the characters to keep to the regular expression
+        let regex = new RegExp('[^a-zA-Z0-9 \\n,.' + keepChars + ']', 'g');
+        str = str.replace(regex, '');
+      }
+
+      // Remove leading spaces from each line
+      str = str.replace(/^\s+/gm, '');
+
+      // Use a temporary div element to preserve the formatting
+      let div = document.createElement('div');
+      div.innerHTML = str;
+      str = div.innerText;
+      output.value = str;
+    });
+
+    copyButton.addEventListener('click', function() {
+      output.select();
+      document.execCommand('copy');
+    });
+  </script>
+</body>
+</html>
