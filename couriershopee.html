@@ -43,6 +43,8 @@
       <button onclick="pasteInput2()">Paste</button>
       <button onclick="copyInput2()">Copy</button>
     </div>
+    <br>
+    <button onclick="refreshIframe()">Refresh Form</button>
   </div></center>
   
   <!-- The iframe below with original size attributes -->
@@ -73,6 +75,13 @@
     function copyInput2() {
       var input = document.getElementById("input2").value;
       navigator.clipboard.writeText(input);
+    }
+    
+    function refreshIframe() {
+      var iframe = document.getElementById("myiframe");
+      var src = iframe.src;
+      iframe.src = '';
+      iframe.src = src;
     }
     
     // The rest of your JavaScript functions here
