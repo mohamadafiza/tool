@@ -21,6 +21,18 @@
       border: none; /* Remove iframe border */
       margin-top: -480px; /* To avoid overlapping with the floating content */
     }
+    /* Style for the top and bottom buttons */
+    .top-bottom-button {
+      position: fixed;
+      right: 20px;
+      z-index: 1; /* Place it above the iframe */
+    }
+    #top-button {
+      top: 50%;
+    }
+    #bottom-button {
+      bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -44,11 +56,18 @@
       <button onclick="copyInput2()">Copy</button>
     </div>
     <br>
-    <button onclick="refreshIframe()">Refresh Form</button>
-  </div></center>
+    <button onclick="refreshIframe()">Refresh Form</button></center>
+
+    <!-- Top and Bottom buttons -->
+    <button id="top-button" class="top-bottom-button" onclick="window.scrollTo(0,0)">Go to Top</button>
+    <button id="bottom-button" class="top-bottom-button" onclick="window.scrollTo(0,document.body.scrollHeight)">Go to Bottom</button>
+
+  </div>
+
   
   <!-- The iframe below with original size attributes -->
   <iframe id="myiframe" src="https://help.shopee.com.my/portal/webform/1cfc5ae2796b40a19da5a9e386e75c88"></iframe>
+
   
   <script>
     function pasteInput1() {
@@ -84,8 +103,9 @@
       iframe.src = src;
     }
     
-    // The rest of your JavaScript functions here
+   // The rest of your JavaScript functions here
     
   </script>
+
 </body>
 </html>
