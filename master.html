@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shopee Change Courier Form</title>
+  <style>
+    /* Style for the floating content */
+    .floating-content {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      padding: 10px;
+      z-index: 1; /* Place it above the iframe */
+    }
+    /* Style for the iframe */
+    #myiframe {
+      width: 100%;
+      height: 1800px; /* Keep the original height */
+      border: none; /* Remove iframe border */
+      margin-top: -480px; /* To avoid overlapping with the floating content */
+    }
+    /* Style for the top and bottom buttons */
+    .top-bottom-button {
+      position: fixed;
+      right: 20px;
+      z-index: 1; /* Place it above the iframe */
+    }
+    #top-button {
+      top: 50%;
+    }
+    #bottom-button {
+      bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <center>
+    <h1>Shopee Change Courier Form</h1>
+    <a href="https://help.shopee.com.my/portal/webform/1cfc5ae2796b40a19da5a9e386e75c88" target="_blank">Shopee Change Courier Form</a>
+  </center>
+  
+  <!-- Floating content container -->
+  <div class="floating-content">
+    <!-- Inserted content from your request -->
+    <center><div>
+      <input type="text" id="input1" value="afiza.net@gmail.com">
+      <button onclick="pasteInput1()">Paste</button>
+      <button onclick="copyInput1()">Copy</button>
+    </div>
+    <br>
+    <div>
+      <input type="text" id="input2" value="510114">
+      <button onclick="pasteInput2()">Paste</button>
+      <button onclick="copyInput2()">Copy</button>
+    </div>
+    <br>
+    <button onclick="refreshIframe()">Refresh Form</button></center>
+
+    <!-- Top and Bottom buttons -->
+    <button id="top-button" class="top-bottom-button" onclick="window.scrollTo(0,0)">Go to Top</button>
+    <button id="bottom-button" class="top-bottom-button" onclick="window.scrollTo(0,document.body.scrollHeight)">Go to Bottom</button>
+
+  </div>
+
+  
+  <!-- The iframe below with original size attributes -->
+  <iframe id="myiframe" src="https://help.shopee.com.my/portal/webform/1cfc5ae2796b40a19da5a9e386e75c88"></iframe>
+
+  
+  <script>
+    function pasteInput1() {
+      navigator.clipboard.readText().then(text => {
+        document.getElementById("input1").value = text;
+      }).catch(err => {
+        console.error('Failed to read clipboard contents: ', err);
+      });
+    }
+    
+    function copyInput1() {
+      var input = document.getElementById("input1").value;
+      navigator.clipboard.writeText(input);
+    }
+    
+    function pasteInput2() {
+      navigator.clipboard.readText().then(text => {
+        document.getElementById("input2").value = text;
+      }).catch(err => {
+        console.error('Failed to read clipboard contents: ', err);
+      });
+    }
+    
+    function copyInput2() {
+      var input = document.getElementById("input2").value;
+      navigator.clipboard.writeText(input);
+    }
+    
+    function refreshIframe() {
+      var iframe = document.getElementById("myiframe");
+      var src = iframe.src;
+      iframe.src = '';
+      iframe.src = src;
+    }
+    
+   // The rest of your JavaScript functions here
+    
+  </script>
+
+</body>
+</html>
