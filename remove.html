@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,38 +30,55 @@
     let keepCharsInput = document.querySelector('#keep-chars');
     let pasteButton = document.querySelector('#paste-button');
 
-pasteButton.addEventListener('click', function() {
-  navigator.clipboard.readText().then(clipText => input.value = clipText);
-});
+    pasteButton.addEventListener('click', function() {
+      navigator.clipboard.readText().then(clipText => input.value = clipText);
+    });
 
-button.addEventListener('click', function() {
-  let str = input.value;
-  // Replace multiple spaces or tabs with a single space
-  str = str.replace(/[ \t]+/g, ' ');
+    button.addEventListener('click', function() {
+      let str = input.value;
 
-  // If the "Remove special characters" checkbox is checked, remove all special characters
-  if (specialCharactersCheckbox.checked) {
-    let keepChars = keepCharsInput.value.trim();
-    // Add the characters to keep to the regular expression
-    let regex = new RegExp('[^a-zA-Z0-9 \\n,.' + keepChars + ']', 'g');
-    str = str.replace(regex, '');
-  }
+      // Replace multiple spaces or tabs with a single space
+      str = str.replace(/[ \t]+/g, ' ');
 
-  // Remove leading spaces from each line
-  str = str.replace(/^\s+/gm, '');
+      // If the "Remove special characters" checkbox is checked, remove all special characters
+      if (specialCharactersCheckbox.checked) {
+        let keepChars = keepCharsInput.value.trim();
+        // Add the characters to keep to the regular expression
+        let regex = new RegExp('[^a-zA-Z0-9 \\n,.' + keepChars + ']', 'g');
+        str = str.replace(regex, '');
+      }
 
-  // Use a temporary div element to preserve the formatting
-  let div = document.createElement('div');
-  div.innerHTML = str;
-  str = div.innerText;
-  output.value = str;
-});
+      // Split the text into lines
+      let lines = str.split('\n');
 
-copyButton.addEventListener('click', function() {
-  output.select();
-  document.execCommand('copy');
-});
+      // Remove leading and trailing spaces from each line
+      lines = lines.map(line => line.trim());
 
+      // Filter out empty lines and join the lines back together with a single blank line
+      let resultLines = [];
+      let consecutiveBlankLines = 0;
+
+      for (let line of lines) {
+        if (line === '') {
+          consecutiveBlankLines++;
+          if (consecutiveBlankLines <= 1) {
+            resultLines.push(line);
+          }
+        } else {
+          consecutiveBlankLines = 0;
+          resultLines.push(line);
+        }
+      }
+
+      str = resultLines.join('\n');
+
+      output.value = str;
+    });
+
+    copyButton.addEventListener('click', function() {
+      output.select();
+      document.execCommand('copy');
+    });
   </script>
 </body>
 </html>
