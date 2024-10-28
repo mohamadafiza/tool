@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Drive Link Converter</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+        input, button { margin: 10px 0; padding: 10px; font-size: 16px; }
+        input { width: 100%; max-width: 400px; }
+        #convertedLink { color: blue; word-wrap: break-word; margin: 15px 0; }
+        a { color: blue; text-decoration: underline; }
+        .button-container { display: flex; gap: 10px; }
+        button { flex: 1; max-width: 120px; }
+    </style>
+</head>
+<body>
+
+    <h2>Google Drive Link Converter</h2>
+    <p>Paste a Google Drive link below to automatically convert it:</p>
+
+    <div class="button-container">
+        <button onclick="pasteLink()">Paste Link</button>
+        <button onclick="clearLink()">Clear</button>
+    </div>
+
+    <input type="text" id="inputLink" placeholder="Paste Google Drive link here">
+    
+    <p id="convertedLink">Converted link will appear here</p>
+    <button onclick="copyLink()">Copy Converted Link</button>
+
+    <script>
+        const inputLink = document.getElementById('inputLink');
+        const convertedLink = document.getElementById('convertedLink');
+
+        // Automatically convert link as user types
+        inputLink.addEventListener('input', convertLink);
+
+        function pasteLink() {
+            navigator.clipboard.readText().then(text => {
+                inputLink.value = text;
+                convertLink(); // Convert as soon as the text is pasted
+            });
+        }
+
+        function clearLink() {
+            inputLink.value = '';
+            convertedLink.textContent = 'Converted link will appear here';
+        }
+
+        function convertLink() {
+            const match = inputLink.value.match(/[-\w]{25,}/);
+            if (match) {
+                const folderLink = `https://drive.google.com/drive/folders/${match[0]}?usp=sharing`;
+                convertedLink.innerHTML = `<a href="${folderLink}" target="_blank">${folderLink}</a>`;
+            } else {
+                convertedLink.textContent = "Invalid Google Drive link.";
+            }
+        }
+
+        function copyLink() {
+            const linkText = convertedLink.textContent;
+            navigator.clipboard.writeText(linkText).then(() => {
+                alert("Converted link copied to clipboard!");
+            });
+        }
+    </script>
+
+</body>
+</html>
