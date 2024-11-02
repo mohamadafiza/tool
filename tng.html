@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malaysia NRIC Touch N Go (TNG) Serial Number Retriever</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-md mx-auto">
+        <h1 class="text-2xl font-bold mb-6 text-center">Malaysia NRIC Touch N Go (TNG) Serial Number Retriever</h1>
+        <h4 class="text-center mb-6">
+            Forgot your MyKad TnG Serial Number? No worries! Start scanning your MyKad below to retrieve it. <br>
+            Rest assured, we <strong>CANNOT</strong> access any of your MyKad data. This scan only retrieves your MyKad TNG Serial Number.
+        </h4>
+        <div id="unsupported-message" class="hidden text-red-500 text-center mb-4">
+            Your device or browser is not supported for Web NFC API. Please try on the latest Chrome browser on Android.
+        </div>
+
+        <button id="scan-button" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline hidden">
+            Scan Malaysia NRIC
+        </button>
+
+        <div id="loading" class="hidden text-center mt-4">
+            <svg class="animate-spin h-8 w-8 text-blue-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            <p>Scanning...</p>
+        </div>
+
+        <div id="result" class="hidden text-center mt-4">
+            <p class="text-lg font-semibold">NFC Detected Serial Number: <span id="serial-number"></span></p>
+            <p class="text-lg font-semibold">Touch N Go Serial Number: <span id="tng-number"></span></p>
+            <button id="copy-serial" class="mt-2 bg-green-500 text-white py-1 px-4 rounded hover:bg-green-700">Copy NFC Serial</button>
+            <button id="copy-tng" class="mt-2 bg-green-500 text-white py-1 px-4 rounded hover:bg-green-700">Copy TNG Number</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+    <script src="nfc.js"></script>
+</body>
+</html>
