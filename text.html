@@ -150,6 +150,40 @@
 
       textArea.value = resultLines.join('\n');
     }
+
+    function boldTitles() {
+      var textArea = document.getElementById("textArea");
+      var text = textArea.value;
+      var lines = text.split('\n');
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        // Check if the line is a title (no numbers, not already bolded, and not empty)
+        if (line !== "" && !/\d/.test(line) && !line.startsWith('*')) {
+          // Capitalize the first letter and add * around the title
+          lines[i] = '*' + line.charAt(0).toUpperCase() + line.slice(1) + '*';
+        }
+      }
+
+      textArea.value = lines.join('\n');
+    }
+
+    function addDashToNumbers() {
+      var textArea = document.getElementById("textArea");
+      var text = textArea.value;
+      var lines = text.split('\n');
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        // Check if the line has a number but no dash
+        if (/\d/.test(line) && !/-/.test(line)) {
+          // Add a dash between text and number
+          lines[i] = line.replace(/([a-zA-Z]+)\s*(\d+)/g, '$1 - $2');
+        }
+      }
+
+      textArea.value = lines.join('\n');
+    }
   </script>
 </head>
 <body>
@@ -164,6 +198,8 @@
       <button onclick="convertCase('capitalized')">Capitalized Case</button>
       <button onclick="convertCase('title')">Title Case</button>
       <button onclick="removeNumberFormatting()">Remove Number Formatting</button>
+      <button onclick="boldTitles()">Bold Titles</button>
+      <button onclick="addDashToNumbers()">Add Dash to Numbers</button>
       <br><br>
       <button onclick="pasteText()">Paste</button>
       <button onclick="copyToClipboard()">Copy to Clipboard</button>
