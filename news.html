@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Search Malaysia 24h</title>
+    <style>
+        /* Optional: Add some styling */
+        #keywordInput {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #357ABD;
+        }
+    </style>
+</head>
+<center><body>
+    <h1>Search News (Malaysia, Past 24 Hours)</h1>
+    <input type="text" id="keywordInput" placeholder="Enter keyword">
+    <button onclick="searchNews()">Search News</button>
+
+<script>
+    function searchNews() {
+        const keyword = document.getElementById('keywordInput').value;
+        if (keyword.trim() === "") {
+            alert("Please enter a keyword.");
+            return;
+        }
+        const url = `https://www.google.com.my/search?q=${encodeURIComponent(keyword)}&cr=countryMY&tbs=ctr:countryMY,qdr:d&tbm=nws`;
+        window.open(url, '_blank');
+    }
+</script>
+<br><br>
+<a href="https://www.google.com.my/search?q=&cr=countryMY&tbs=ctr:countryMY,qdr:d&tbm=nws" target="_blank">.</a><br>
+</html>
