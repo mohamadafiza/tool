@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Search</title>
+    <style>
+        /* Optional: Add some styling */
+        #keywordInput {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #357ABD;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search News (Malaysia, Past 24 Hours)</h1>
+    <input type="text" id="keywordInput" placeholder="Enter keyword">
+    <button onclick="searchNews()">Search News</button>
+
+<script>
+    function searchNews() {
+        const keyword = document.getElementById('keywordInput').value;
+        if (keyword.trim() === "") {
+            alert("Please enter a keyword.");
+            return;
+        }
+        const url = `https://www.google.com.my/search?q=${encodeURIComponent(keyword)}&cr=countryMY&tbs=ctr:countryMY,qdr:d&tbm=nws`;
+        window.open(url, '_blank');
+    }
+</script>
+<br><br>
+<a href="https://www.google.com.my/search?q=vaksin&cr=countryMY&tbs=ctr:countryMY,qdr:d&tbm=nws" target="_blank">Covid</a> <br>
+<a href="https://www.google.com.my/search?q=vaksin&cr=countryMY&tbs=ctr:countryMY,qdr:d&tbm=nws" target="_blank">Vaksin</a> <br>
+<a href="https://www.google.com.my/search?q=kkm&cr=countryMY&tbs=ctr:countryMY,qdr:d&tbm=nws" target="_blank">KKM</a> <br>
+<a href="https://www.google.com.my/search?q=wabak&cr=countryMY&tbs=ctr:countryMY,qdr:d&tbm=nws" target="_blank">Wabak</a> <br>
+<a href="https://www.google.com.my/search?q=mpox&cr=countryMY&tbs=ctr:countryMY,qdr:d&tbm=nws" target="_blank">MPOX</a> <br>
+<a href="https://www.google.com.my/search?q=trump&cr=countryMY&tbs=ctr:countryMY,qdr:d&tbm=nws" target="_blank">Trump</a> <br>
+<a href="https://www.google.com.my/search?q=WHO&cr=countryMY&tbs=ctr:countryMY,qdr:d&tbm=nws" target="_blank">WHO</a> <br>
+</body>
+</html>
