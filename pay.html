@@ -3,7 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto Redirect</title>
+  <title>Open Touch 'n Go App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
   <script>
     // Deep link to open the Touch 'n Go app
     const deepLink = "tng://payment?sc=bDLnpKf6Sv";
@@ -23,11 +56,23 @@
       }, 1000); // Adjust the delay (in milliseconds) as needed
     }
 
-    // Automatically call the function when the page loads
-    window.onload = openApp;
+    // Show the modal when the page loads
+    window.onload = function () {
+      document.getElementById("overlay").style.display = "block";
+      document.getElementById("modal").style.display = "block";
+    };
+
+    // Add click event listener to the button
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("openAppButton").addEventListener("click", openApp);
+    });
   </script>
 </head>
 <body>
-  <p>Redirecting to Touch 'n Go app...</p>
+  <div id="overlay" class="overlay"></div>
+  <div id="modal" class="modal">
+    <p>Open the Touch 'n Go app to proceed with the payment.</p>
+    <button id="openAppButton">Open in Touch 'n Go App</button>
+  </div>
 </body>
 </html>
