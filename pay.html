@@ -1,0 +1,12 @@
+<button id="openAppButton">Open in Touch 'n Go App</button>
+<script>
+  const deepLink = "tng://payment?sc=bDLnpKf6Sv";
+  const fallbackUrl = "https://payment.tngdigital.com.my/sc/bDLnpKf6Sv";
+
+  document.getElementById("openAppButton").addEventListener("click", function () {
+    window.location.href = deepLink;
+    setTimeout(function () {
+      window.location.href = fallbackUrl;
+    }, 1000);
+  });
+</script>
