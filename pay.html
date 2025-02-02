@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto Click Button</title>
+  <title>Auto Redirect</title>
   <script>
     // Deep link to open the Touch 'n Go app
     const deepLink = "tng://payment?sc=bDLnpKf6Sv";
@@ -23,19 +23,11 @@
       }, 1000); // Adjust the delay (in milliseconds) as needed
     }
 
-    // Automatically click the button when the page loads
-    window.onload = function () {
-      document.getElementById("openAppButton").click();
-    };
+    // Automatically call the function when the page loads
+    window.onload = openApp;
   </script>
 </head>
 <body>
-  <button id="openAppButton" style="display:none;">Open in Touch 'n Go App</button>
   <p>Redirecting to Touch 'n Go app...</p>
-
-  <script>
-    // Add click event listener to the button
-    document.getElementById("openAppButton").addEventListener("click", openApp);
-  </script>
 </body>
 </html>
