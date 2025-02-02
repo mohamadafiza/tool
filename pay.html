@@ -4,45 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Open Touch 'n Go App</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
-  <script>
-    // Deep link to open the Touch 'n Go app
-    const deepLink = "tng://payment?sc=bDLnpKf6Sv";
+<button id="openAppButton">Open in Touch 'n Go App</button>
+<script>
+  const deepLink = "tng://payment?sc=bDLnpKf6Sv";
+  const fallbackUrl = "https://payment.tngdigital.com.my/sc/bDLnpKf6Sv";
 
-    // Fallback URL (web page) if the app is not installed
-    const fallbackUrl = "https://payment.tngdigital.com.my/sc/bDLnpKf6Sv";
-
-    // Function to attempt opening the app
-    function openApp() {
-      // Try to open the app using the deep link
-      window.location.href = deepLink;
-
-      // Set a timeout to check if the app was opened
-      setTimeout(function () {
-        // If the app was not opened, redirect to the fallback URL
-        window.location.href = fallbackUrl;
-      }, 1000); // Adjust the delay (in milliseconds) as needed
-    }
-
-    // Add click event listener to the button
-    document.addEventListener("DOMContentLoaded", function () {
-      document.getElementById("openAppButton").addEventListener("click", openApp);
-    });
-  </script>
-</head>
-<body>
-  <p>Click the button below to open the Touch 'n Go app:</p>
-  <button id="openAppButton">Open in Touch 'n Go App</button>
-</body>
+  document.getElementById("openAppButton").addEventListener("click", function () {
+    window.location.href = deepLink;
+    setTimeout(function () {
+      window.location.href = fallbackUrl;
+    }, 1000);
+  });
+</script>
 </html>
