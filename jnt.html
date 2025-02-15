@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>J&T Courier Tracking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e65c00;
+        }
+        @media (max-width: 600px) {
+            input[type="text"], button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>J&T Courier Tracking</h2>
+    <input type="text" id="trackingNumber" placeholder="Enter your tracking number" />
+    <button onclick="trackPackage()">Track</button>
+</div>
+
+<script>
+    function trackPackage() {
+        const trackingNumber = document.getElementById('trackingNumber').value.trim();
+        if (trackingNumber) {
+            // Open the tracking URL in a new tab
+            window.open(`https://www.jtexpress.my/tracking/${trackingNumber}`, '_blank');
+        } else {
+            alert("Please enter a valid tracking number.");
+        }
+    }
+
+    // Allow pressing Enter to trigger the tracking
+    document.getElementById('trackingNumber').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            trackPackage();
+        }
+    });
+</script>
+
+</body>
+</html>
