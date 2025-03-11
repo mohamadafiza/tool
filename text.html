@@ -184,6 +184,22 @@
 
       textArea.value = lines.join('\n');
     }
+
+    function removeBlankLines() {
+      var textArea = document.getElementById("textArea");
+      var text = textArea.value;
+      
+      // Split the text into lines
+      var lines = text.split('\n');
+      
+      // Filter out blank lines
+      var nonBlankLines = lines.filter(function(line) {
+        return line.trim() !== '';
+      });
+      
+      // Join the non-blank lines back together
+      textArea.value = nonBlankLines.join('\n');
+    }
   </script>
 </head>
 <body>
@@ -200,6 +216,7 @@
       <button onclick="removeNumberFormatting()">Remove Number Formatting</button>
       <button onclick="boldTitles()">Bold Titles</button>
       <button onclick="addDashToNumbers()">Add Dash to Numbers</button>
+      <button onclick="removeBlankLines()">Remove Blank Lines</button>
       <br><br>
       <button onclick="pasteText()">Paste</button>
       <button onclick="copyToClipboard()">Copy to Clipboard</button>
