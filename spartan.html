@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checklist Jantung Spartan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+  <div class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6">
+    <h1 class="text-xl font-bold text-center">Checklist Jantung Spartan</h1>
+
+    <!-- 1.1 Position -->
+    <div>
+      <p class="font-semibold">1.1 Codes Position</p>
+      <label><input type="radio" name="position" value="buy" /> Buy</label>
+      <label class="ml-4"><input type="radio" name="position" value="sell" /> Sell</label>
+    </div>
+
+    <!-- 1.2 Timeframe -->
+    <div>
+      <p class="font-semibold">1.2 Codes Timeframe</p>
+      <label><input type="checkbox" id="h1" /> H1</label>
+      <label class="ml-4"><input type="checkbox" id="h4" /> H4</label>
+    </div>
+
+    <!-- 2. Origin Value Day -->
+    <div>
+      <p class="font-semibold">2. Origin Value Day</p>
+      <label><input type="radio" name="vd" value="in" /> Belum Cross VD</label>
+      <label class="ml-4"><input type="radio" name="vd" value="above" /> Origin Cross VD</label>
+    </div>
+
+    <!-- 3. Momentum -->
+    <div>
+      <p class="font-semibold">3. Momentum</p>
+      <label><input type="radio" name="momentum" value="done" /> Dah Habis</label>
+      <label class="ml-4"><input type="radio" name="momentum" value="notyet" /> Belum</label>
+    </div>
+
+    <!-- 4. YV -->
+    <div>
+      <p class="font-semibold">4. YV Status</p>
+      <label><input type="radio" name="yv" value="notyet" /> YV Belum Matang</label>
+      <label class="ml-4"><input type="radio" name="yv" value="mature" /> YV Matang</label>
+    </div>
+
+    <!-- Link Belum Matang -->
+    <div id="belumMatangSection" class="hidden">
+      <p class="font-semibold text-center">Link (YV Belum Matang)</p>
+      <table class="w-full text-sm mt-2 mx-auto">
+        <tbody>
+          <tr><td class="text-left p-2"><label><input type="checkbox" id="db_pdb" /> DB - PDB</label></td></tr>
+          <tr><td class="text-left p-2"><label><input type="checkbox" id="db_yvb" /> DB - YVB</label></td></tr>
+          <tr><td class="text-left p-2"><label><input type="checkbox" id="ds_pds" /> DS - PDS</label></td></tr>
+          <tr><td class="text-left p-2"><label><input type="checkbox" id="ds_yvs" /> DS - YVS</label></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Link Matang -->
+    <div id="matangSection" class="hidden">
+      <p class="font-semibold text-center">Link (YV Matang)</p>
+      <table class="w-full text-sm mt-2 mx-auto">
+        <tbody>
+          <tr><td class="text-left p-2"><label><input type="checkbox" id="matang_db_yvb" /> DB - YVB</label></td></tr>
+          <tr><td class="text-left p-2"><label><input type="checkbox" id="matang_ds_yvs" /> DS - YVS</label></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Result -->
+    <div class="mt-4 p-4 bg-gray-100 rounded-xl border" id="resultBox">
+      <p class="text-center font-semibold">Sila lengkapkan di atas ...</p>
+    </div>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll('input');
+    const resultBox = document.getElementById('resultBox');
+    const belumMatangSection = document.getElementById('belumMatangSection');
+    const matangSection = document.getElementById('matangSection');
+
+    inputs.forEach(input => {
+      input.addEventListener('change', evaluate);
+    });
+
+    function evaluate() {
+      const position = document.querySelector('input[name="position"]:checked')?.value;
+      const h1 = document.getElementById('h1').checked;
+      const h4 = document.getElementById('h4').checked;
+      const vd = document.querySelector('input[name="vd"]:checked')?.value;
+      const momentum = document.querySelector('input[name="momentum"]:checked')?.value;
+      const yv = document.querySelector('input[name="yv"]:checked')?.value;
+
+      belumMatangSection.classList.toggle('hidden', yv !== 'notyet');
+      matangSection.classList.toggle('hidden', yv !== 'mature');
+
+      if (!(h1 && h4)) {
+        resultBox.innerHTML = '<p class="text-red-500 text-center">Syarat Codes: H1 dan H4 sama.</p>';
+        return;
+      }
+      if (vd !== 'above') {
+        resultBox.innerHTML = '<p class="text-red-500 text-center">Syarat VD: Perlu Cross VD dulu.</p>';
+        return;
+      }
+      if (momentum !== 'notyet') {
+        resultBox.innerHTML = '<p class="text-red-500 text-center">Syarat Momentum: Belum habis.</p>';
+        return;
+      }
+
+      let output = '';
+      let valid = false;
+
+      if (yv === 'notyet') {
+        const db_pdb = document.getElementById('db_pdb').checked;
+        const db_yvb = document.getElementById('db_yvb').checked;
+        const ds_pds = document.getElementById('ds_pds').checked;
+        const ds_yvs = document.getElementById('ds_yvs').checked;
+
+        const totalLink = [db_pdb, db_yvb, ds_pds, ds_yvs].filter(Boolean).length;
+        if (totalLink === 0) {
+          resultBox.innerHTML = `<p class="text-red-500 text-center">Sila pilih sekurang-kurangnya satu link.</p>`;
+          return;
+        }
+
+        // TP di RP/DB cases
+        if (position === 'buy') {
+          // Case 1: DB-PDB✅ DB-YVB✅ DS-PDS❌ DS-YVS❌
+          if (db_pdb && db_yvb && !ds_pds && !ds_yvs) {
+            valid = true;
+            output = 'Valid Buy – TP di RP/DB';
+          }
+          // Case 2: DB-PDB✅ DB-YVB❌ DS-PDS❌ DS-YVS❌
+          else if (db_pdb && !db_yvb && !ds_pds && !ds_yvs) {
+            valid = true;
+            output = 'Valid Buy – TP di RP/DB';
+          }
+          // RLine cases for Buy
+          // Case 1: DB-PDB✅ DB-YVB✅ DS-PDS✅ DS-YVS❌
+          else if (db_pdb && db_yvb && ds_pds && !ds_yvs) {
+            valid = true;
+            output = 'Valid Buy – TP di RLine';
+          }
+          // Case 2: DB-PDB✅ DB-YVB❌ DS-PDS✅ DS-YVS❌
+          else if (db_pdb && !db_yvb && ds_pds && !ds_yvs) {
+            valid = true;
+            output = 'Valid Buy – TP di RLine';
+          }
+        }
+        else if (position === 'sell') {
+          // Case 1: DB-PDB❌ DB-YVB❌ DS-PDS✅ DS-YVS✅
+          if (!db_pdb && !db_yvb && ds_pds && ds_yvs) {
+            valid = true;
+            output = 'Valid Sell – TP DB jika H4, TP RP jika H1';
+          }
+          // Case 2: DB-PDB❌ DB-YVB❌ DS-PDS✅ DS-YVS❌
+          else if (!db_pdb && !db_yvb && ds_pds && !ds_yvs) {
+            valid = true;
+            output = 'Valid Sell – TP DB jika H4, TP RP jika H1';
+          }
+          // RLine cases for Sell
+          // Case 1: DB-PDB✅ DB-YVB❌ DS-PDS✅ DS-YVS✅
+          else if (db_pdb && !db_yvb && ds_pds && ds_yvs) {
+            valid = true;
+            output = 'Valid Sell – TP di RLine';
+          }
+          // Case 2: DB-PDB✅ DB-YVB❌ DS-PDS✅ DS-YVS❌
+          else if (db_pdb && !db_yvb && ds_pds && !ds_yvs) {
+            valid = true;
+            output = 'Valid Sell – TP di RLine';
+          }
+        }
+      }
+
+      // YV Matang logic
+      if (yv === 'mature') {
+        const matang_db_yvb = document.getElementById('matang_db_yvb').checked;
+        const matang_ds_yvs = document.getElementById('matang_ds_yvs').checked;
+
+        if (matang_db_yvb && !matang_ds_yvs && position === 'buy') {
+          valid = true;
+          output = 'Valid Buy – TP DB jika H4, TP RP jika H1';
+        } else if (!matang_db_yvb && matang_ds_yvs && position === 'sell') {
+          valid = true;
+          output = 'Valid Sell – TP DB jika H4, TP RP jika H1';
+        } else if ((matang_db_yvb && matang_ds_yvs) || (!matang_db_yvb && !matang_ds_yvs)) {
+          resultBox.innerHTML = `<p class="text-red-500 text-center">Belum cukup syarat untuk valid entry.</p>`;
+          return;
+        }
+      }
+
+      if (!valid) {
+        resultBox.innerHTML = `<p class="text-yellow-600 text-center">Belum cukup syarat untuk valid entry.</p>`;
+      } else {
+        resultBox.innerHTML = `<p class="text-green-600 text-center font-semibold">${output}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
