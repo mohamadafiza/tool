@@ -41,8 +41,8 @@
     <!-- 4. YV -->
     <div>
       <p class="font-semibold">4. YV Status</p>
-      <label><input type="radio" name="yv" value="notyet" /> YV Belum Matang</label>
-      <label class="ml-4"><input type="radio" name="yv" value="mature" /> YV Matang</label>
+      <label><input type="radio" name="yv" value="notyet" /> YV Belum Matang (AM)</label>
+      <label class="ml-4"><input type="radio" name="yv" value="mature" /> YV Matang (PM)</label>
     </div>
 
     <!-- Link Belum Matang -->
@@ -120,7 +120,7 @@
 
         const totalLink = [db_pdb, db_yvb, ds_pds, ds_yvs].filter(Boolean).length;
         if (totalLink === 0) {
-          resultBox.innerHTML = `<p class="text-red-500 text-center">Sila pilih sekurang-kurangnya satu link.</p>`;
+          resultBox.innerHTML = `<p class="text-red-500 text-center">Perlu ada link untuk SOP valid.</p>`;
           return;
         }
 
@@ -129,12 +129,12 @@
           // Case 1: DB-PDB✅ DB-YVB✅ DS-PDS❌ DS-YVS❌
           if (db_pdb && db_yvb && !ds_pds && !ds_yvs) {
             valid = true;
-            output = 'Valid Buy – TP di RP/DB';
+            output = 'Valid Buy – TP DB jika H4, TP RP jika H1';
           }
           // Case 2: DB-PDB✅ DB-YVB❌ DS-PDS❌ DS-YVS❌
           else if (db_pdb && !db_yvb && !ds_pds && !ds_yvs) {
             valid = true;
-            output = 'Valid Buy – TP di RP/DB';
+            output = 'Valid Buy – TP DB jika H4, TP RP jika H1';
           }
           // RLine cases for Buy
           // Case 1: DB-PDB✅ DB-YVB✅ DS-PDS✅ DS-YVS❌
@@ -152,12 +152,12 @@
           // Case 1: DB-PDB❌ DB-YVB❌ DS-PDS✅ DS-YVS✅
           if (!db_pdb && !db_yvb && ds_pds && ds_yvs) {
             valid = true;
-            output = 'Valid Sell – TP DB jika H4, TP RP jika H1';
+            output = 'Valid Sell – TP DS jika H4, TP RP jika H1';
           }
           // Case 2: DB-PDB❌ DB-YVB❌ DS-PDS✅ DS-YVS❌
           else if (!db_pdb && !db_yvb && ds_pds && !ds_yvs) {
             valid = true;
-            output = 'Valid Sell – TP DB jika H4, TP RP jika H1';
+            output = 'Valid Sell – TP DS jika H4, TP RP jika H1';
           }
           // RLine cases for Sell
           // Case 1: DB-PDB✅ DB-YVB❌ DS-PDS✅ DS-YVS✅
