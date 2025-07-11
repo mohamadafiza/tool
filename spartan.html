@@ -140,12 +140,12 @@
           // Case 1: DB-PDB✅ DB-YVB✅ DS-PDS✅ DS-YVS❌
           else if (db_pdb && db_yvb && ds_pds && !ds_yvs) {
             valid = true;
-            output = 'Valid Buy – TP di RLine';
+            output = 'Valid Buy – TP di RLine (H1) / TP RP(H4)';
           }
           // Case 2: DB-PDB✅ DB-YVB❌ DS-PDS✅ DS-YVS❌
           else if (db_pdb && !db_yvb && ds_pds && !ds_yvs) {
             valid = true;
-            output = 'Valid Buy – TP di RLine';
+            output = 'Valid Buy – TP di RLine (H1) / TP RP(H4)';
           }
         }
         else if (position === 'sell') {
@@ -163,12 +163,12 @@
           // Case 1: DB-PDB✅ DB-YVB❌ DS-PDS✅ DS-YVS✅
           else if (db_pdb && !db_yvb && ds_pds && ds_yvs) {
             valid = true;
-            output = 'Valid Sell – TP di RLine';
+            output = 'Valid Sell – TP di RLine (H1) / TP RP(H4)';
           }
           // Case 2: DB-PDB✅ DB-YVB❌ DS-PDS✅ DS-YVS❌
           else if (db_pdb && !db_yvb && ds_pds && !ds_yvs) {
             valid = true;
-            output = 'Valid Sell – TP di RLine';
+            output = 'Valid Sell – TP di RLine (H1) / TP RP(H4)';
           }
         }
       }
