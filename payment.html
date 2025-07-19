@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pay with Touch 'n Go eWallet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    // Attempt to open TNG app
+    window.location = "https://payment.tngdigital.com.my/sc/bDLnpKf6Sv";
+    // Fallback to app store or web payment page after 2 seconds
+    setTimeout(function() {
+      window.location = "https://www.touchngo.com.my/en/download.html";
+    }, 2000);
+  </script>
+</head>
+<body>
+  <p>Opening Touch 'n Go eWallet...</p>
+  <p>If not redirected, <a href="https://www.touchngo.com.my/en/download.html">download the TNG eWallet app</a>.</p>
+</body>
+</html>
