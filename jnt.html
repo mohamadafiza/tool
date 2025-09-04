@@ -3,79 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
     <title>J&T Courier Tracking</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
+            transition: background-color 0.3s, color 0.3s;
         }
         .container {
-            text-align: center;
-            background: #fff;
+            max-width: 600px;
+            width: 100%;
+            background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
         input[type="text"] {
-            width: 80%;
+            width: 100%;
             padding: 10px;
-            margin-bottom: 10px;
+            margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #ff6600;
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        button, .track-link {
+            background-color: #007bff;
             color: white;
             border: none;
+            padding: 10px 20px;
             border-radius: 5px;
-            font-size: 16px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
-        button:hover {
-            background-color: #e65c00;
+        button:hover, .track-link:hover {
+            background-color: #0056b3;
         }
-        @media (max-width: 600px) {
-            input[type="text"], button {
-                width: 100%;
+        #copy-jt-button, #copy-17track-button, #jt-tracking-link, #17track-tracking-link {
+            display: none;
+        }
+        #dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            color: #007bff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        body.dark-mode {
+            background-color: #333;
+            color: #f4f4f4;
+        }
+        body.dark-mode .container {
+            background: #444;
+        }
+        body.dark-mode input[type="text"] {
+            background: #555;
+            color: #f4f4f4;
+            border-color: #666;
+        }
+        body.dark-mode button, body.dark-mode .track-link {
+            background-color: #1a73e8;
+        }
+        body.dark-mode button:hover, body.dark-mode .track-link:hover {
+            background-color: #1557b0;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            button, .track-link {
+                padding: 8px 15px;
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
+    <button id="dark-mode-toggle">🌙 Dark Mode</button>
+    <div class="container">
+        <h2>J&T Courier Tracking</h2>
+        <p>Enter tracking number</p>
+        <input type="text" id="tracking-number" value="" placeholder="e.g., 639858353745">
+        <div class="button-group">
+            <button id="copy-jt-button" onclick="copyLink('jt')">Copy J&T Link</button>
+            <a id="jt-tracking-link" class="track-link" href="#" target="_blank">Track on J&T</a>
+            <button id="copy-17track-button" onclick="copyLink('17track')">Copy 17track Link</button>
+            <a id="17track-tracking-link" class="track-link" href="#" target="_blank">Track on 17track</a>
+        </div>
+    </div>
 
-<div class="container">
-    <h2>J&T Courier Tracking</h2>
-    <input type="text" id="trackingNumber" placeholder="Enter your tracking number" />
-    <button onclick="trackPackage()">Track</button>
-</div>
+    <script>
+        function trackPackage() {
+            const input = document.getElementById('tracking-number').value.trim();
+            const jtLink = document.getElementById('jt-tracking-link');
+            const track17Link = document.getElementById('17track-tracking-link');
+            const jtCopyButton = document.getElementById('copy-jt-button');
+            const track17CopyButton = document.getElementById('copy-17track-button');
 
-<script>
-    function trackPackage() {
-        const trackingNumber = document.getElementById('trackingNumber').value.trim();
-        if (trackingNumber) {
-            // Open the tracking URL in a new tab
-            window.open(`https://www.jtexpress.my/tracking/${trackingNumber}`, '_blank');
-        } else {
-            alert("Please enter a valid tracking number.");
+            if (!input || !/^\d{12}$/.test(input)) {
+                jtLink.style.display = 'none';
+                track17Link.style.display = 'none';
+                jtCopyButton.style.display = 'none';
+                track17CopyButton.style.display = 'none';
+                return;
+            }
+
+            const jtBaseUrl = 'https://jtexpress.my/tracking/';
+            const jtUrl = jtBaseUrl + encodeURIComponent(input);
+            jtLink.href = jtUrl;
+            jtLink.style.display = 'inline-block';
+            jtCopyButton.style.display = 'inline-block';
+            jtCopyButton.setAttribute('data-url', jtUrl);
+
+            const track17BaseUrl = 'https://t.17track.net/en#nums=';
+            const fc = '&fc=100079';
+            const track17Url = track17BaseUrl + encodeURIComponent(input) + fc;
+            track17Link.href = track17Url;
+            track17Link.style.display = 'inline-block';
+            track17CopyButton.style.display = 'inline-block';
+            track17CopyButton.setAttribute('data-url', track17Url);
         }
-    }
 
-    // Allow pressing Enter to trigger the tracking
-    document.getElementById('trackingNumber').addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            trackPackage();
+        function copyLink(service) {
+            const button = service === 'jt' ? document.getElementById('copy-jt-button') : document.getElementById('copy-17track-button');
+            const url = button.getAttribute('data-url');
+            navigator.clipboard.writeText(url).then(() => {
+                alert(`${service === 'jt' ? 'J&T' : '17track'} link copied to clipboard!`);
+            });
         }
-    });
-</script>
 
+        document.getElementById('tracking-number').addEventListener('input', trackPackage);
+
+        document.getElementById('dark-mode-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const button = document.getElementById('dark-mode-toggle');
+            button.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
+        });
+    </script>
 </body>
 </html>
