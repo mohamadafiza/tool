@@ -191,24 +191,30 @@
             const url = new URL(window.location.href);
             let trackingNumber = null;
 
-            // Check query string (e.g., ?631854443060 or ?tracking=631854443060)
+            // Check query string (e.g., ?631858353745 or ?tracking=631858353745)
             const params = new URLSearchParams(url.search);
             if (params.has('tracking')) {
                 trackingNumber = params.get('tracking');
             } else if (url.search) {
-                // If no named parameter, try the first query value
                 trackingNumber = url.search.slice(1); // Remove '?'
             }
 
-            // Check path (e.g., /jnt/631854443060)
+            // Enhanced path check for /tool/jnt/631858353745 (last segment after /jnt/)
             if (!trackingNumber) {
-                const pathParts = url.pathname.split('/');
-                // Look for 12-digit number in the last non-empty part
-                for (let i = pathParts.length - 1; i >= 0; i--) {
-                    if (/^\d{12}$/.test(pathParts[i])) {
-                        trackingNumber = pathParts[i];
-                        break;
+                const pathParts = url.pathname.split('/').filter(part => part); // Remove empty parts
+                // If the path ends with /jnt/, look for the next segment as tracking number
+                const jntIndex = pathParts.indexOf('jnt');
+                if (jntIndex !== -1 && jntIndex < pathParts.length - 1) {
+                    // Check the segment right after 'jnt'
+                    const potentialTracking = pathParts[jntIndex + 1];
+                    if (/^\d{12}$/.test(potentialTracking)) {
+                        trackingNumber = potentialTracking;
                     }
+                }
+                // Fallback: Check last non-empty part of entire path
+                const lastPart = pathParts[pathParts.length - 1];
+                if (/^\d{12}$/.test(lastPart)) {
+                    trackingNumber = lastPart;
                 }
             }
 
@@ -223,7 +229,7 @@
             const track17Row = document.querySelector('.track-row.s17track');
 
             if (!input || !/^\d{12}$/.test(input)) {
-                container.classList.add('hidden');
+                if (container) container.classList.add('hidden');
                 if (jtRow) jtRow.classList.add('hidden');
                 if (trackingmyRow) trackingmyRow.classList.add('hidden');
                 if (track17Row) track17Row.classList.add('hidden');
@@ -277,31 +283,36 @@
             const button = document.getElementById(buttonId);
             if (button) {
                 const url = button.getAttribute('data-url');
-                navigator.clipboard.writeText(url).then(() => {
-                    alert(`${serviceName} link copied to clipboard!`);
-                });
+                if (url) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        alert(`${serviceName} link copied to clipboard!`);
+                    }).catch(() => {
+                        alert('Copy failed - please copy manually.');
+                    });
+                }
             }
         }
 
-        // Auto-fill tracking number from URL on page load
+        // Auto-fill on page load
         window.addEventListener('load', () => {
             const trackingNumber = getTrackingNumberFromURL();
             if (trackingNumber && /^\d{12}$/.test(trackingNumber)) {
                 const input = document.getElementById('tracking-number');
                 if (input) {
                     input.value = trackingNumber;
+                    input.focus(); // Optional: Focus on input for better UX
                     trackPackage();
                 }
             }
         });
 
-        // Input listener for manual entry
+        // Manual input listener
         const trackingInput = document.getElementById('tracking-number');
         if (trackingInput) {
             trackingInput.addEventListener('input', trackPackage);
         }
 
-        // Dark mode toggle
+        // Dark mode
         const darkToggle = document.getElementById('dark-mode-toggle');
         if (darkToggle) {
             darkToggle.addEventListener('click', () => {
