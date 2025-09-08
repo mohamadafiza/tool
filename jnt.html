@@ -42,13 +42,6 @@
             color: #007bff;
             font-size: 18px;
         }
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 10px 0;
-            flex-wrap: wrap;
-        }
         .track-row {
             display: flex;
             align-items: center;
@@ -194,6 +187,31 @@
     </div>
 
     <script>
+        function getTrackingNumberFromURL() {
+            const url = new URL(window.location.href);
+            let trackingNumber = null;
+
+            // Check query string (e.g., ?631854443060 or ?tracking=631854443060)
+            const params = new URLSearchParams(url.search);
+            if (params.has('tracking')) {
+                trackingNumber = params.get('tracking');
+            } else if (url.search) {
+                // If no named parameter, try the first query value
+                trackingNumber = url.search.slice(1); // Remove '?'
+            }
+
+            // Check path (e.g., /jnt/631854443060)
+            if (!trackingNumber) {
+                const pathParts = url.pathname.split('/');
+                const lastPart = pathParts[pathParts.length - 1];
+                if (/^\d{12}$/.test(lastPart)) {
+                    trackingNumber = lastPart;
+                }
+            }
+
+            return trackingNumber;
+        }
+
         function trackPackage() {
             const input = document.getElementById('tracking-number').value.trim();
             const container = document.getElementById('tracking-buttons');
@@ -259,6 +277,16 @@
                 alert(`${serviceName} link copied to clipboard!`);
             });
         }
+
+        // Auto-fill tracking number from URL on page load
+        window.addEventListener('load', () => {
+            const trackingNumber = getTrackingNumberFromURL();
+            if (trackingNumber && /^\d{12}$/.test(trackingNumber)) {
+                const input = document.getElementById('tracking-number');
+                input.value = trackingNumber;
+                trackPackage();
+            }
+        });
 
         document.getElementById('tracking-number').addEventListener('input', trackPackage);
 
