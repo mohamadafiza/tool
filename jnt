@@ -1,1 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J&T Courier Tracking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .button-section {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .button-section h3 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 18px;
+        }
+        .track-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            flex-wrap: wrap;
+        }
+        .track-row a, .track-row button {
+            flex: 1;
+            min-width: 120px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .track-row button:hover, .track-row a:hover {
+            background-color: #0056b3;
+        }
+        .track-row.jt .track-row-link {
+            background-color: #28a745;
+        }
+        .track-row.jt .track-row-link:hover {
+            background-color: #218838;
+        }
+        .track-row.trackingmy .track-row-link {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .track-row.trackingmy .track-row-link:hover {
+            background-color: #e0a800;
+        }
+        .track-row.s17track .track-row-link {
+            background-color: #6f42c1;
+        }
+        .track-row.s17track .track-row-link:hover {
+            background-color: #5a32a3;
+        }
+        .hidden {
+            display: none !important;
+        }
+        #dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            color: #007bff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        body.dark-mode {
+            background-color: #333;
+            color: #f4f4f4;
+        }
+        body.dark-mode .container {
+            background: #444;
+        }
+        body.dark-mode input[type="text"] {
+            background: #555;
+            color: #f4f4f4;
+            border-color: #666;
+        }
+        body.dark-mode .button-section h3 {
+            color: #4dabf7;
+        }
+        body.dark-mode .track-row {
+            background: #555;
+        }
+        body.dark-mode .track-row a, body.dark-mode .track-row button {
+            background-color: #1a73e8;
+        }
+        body.dark-mode .track-row a:hover, body.dark-mode .track-row button:hover {
+            background-color: #1557b0;
+        }
+        body.dark-mode .track-row.jt .track-row-link {
+            background-color: #28a745;
+        }
+        body.dark-mode .track-row.jt .track-row-link:hover {
+            background-color: #218838;
+        }
+        body.dark-mode .track-row.trackingmy .track-row-link {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        body.dark-mode .track-row.trackingmy .track-row-link:hover {
+            background-color: #e0a800;
+        }
+        body.dark-mode .track-row.s17track .track-row-link {
+            background-color: #6f42c1;
+        }
+        body.dark-mode .track-row.s17track .track-row-link:hover {
+            background-color: #5a32a3;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            .track-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .track-row a, .track-row button {
+                min-width: auto;
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="dark-mode-toggle">🌙 Dark Mode</button>
+    <div class="container">
+        <h2>J&T Courier Tracking</h2>
+        <p>Enter tracking number</p>
+        <input type="text" id="tracking-number" value="" placeholder="e.g., 631827738711">
+        
+        <div id="tracking-buttons" class="button-section hidden">
+            <h3>Tracking Options</h3>
+            <div class="track-row jt hidden">
+                <button id="copy-jt-button" onclick="copyLink('jt')">📋 Copy Link</button>
+                <a id="jt-tracking-link" class="track-row-link" href="#" target="_blank">Track on J&T Official</a>
+            </div>
+            <div class="track-row trackingmy hidden">
+                <button id="copy-trackingmy-button" onclick="copyLink('trackingmy')">📋 Copy Link</button>
+                <a id="trackingmy-tracking-link" class="track-row-link" href="#" target="_blank">Track on Tracking.my</a>
+            </div>
+            <div class="track-row s17track hidden">
+                <button id="copy-17track-button" onclick="copyLink('17track')">📋 Copy Link</button>
+                <a id="17track-tracking-link" class="track-row-link" href="#" target="_blank">Track on 17track</a>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        function getTrackingNumberFromURL() {
+            const url = new URL(window.location.href);
+            let trackingNumber = null;
+
+            // Check query string (e.g., ?631854443060 or ?tracking=631854443060)
+            const params = new URLSearchParams(url.search);
+            if (params.has('tracking')) {
+                trackingNumber = params.get('tracking');
+            } else if (url.search) {
+                // If no named parameter, try the first query value
+                trackingNumber = url.search.slice(1); // Remove '?'
+            }
+
+            // Check path (e.g., /jnt/631854443060)
+            if (!trackingNumber) {
+                const pathParts = url.pathname.split('/');
+                // Look for 12-digit number in the last non-empty part
+                for (let i = pathParts.length - 1; i >= 0; i--) {
+                    if (/^\d{12}$/.test(pathParts[i])) {
+                        trackingNumber = pathParts[i];
+                        break;
+                    }
+                }
+            }
+
+            return trackingNumber;
+        }
+
+        function trackPackage() {
+            const input = document.getElementById('tracking-number').value.trim();
+            const container = document.getElementById('tracking-buttons');
+            const jtRow = document.querySelector('.track-row.jt');
+            const trackingmyRow = document.querySelector('.track-row.trackingmy');
+            const track17Row = document.querySelector('.track-row.s17track');
+
+            if (!input || !/^\d{12}$/.test(input)) {
+                container.classList.add('hidden');
+                if (jtRow) jtRow.classList.add('hidden');
+                if (trackingmyRow) trackingmyRow.classList.add('hidden');
+                if (track17Row) track17Row.classList.add('hidden');
+                return;
+            }
+
+            // J&T Official
+            const jtBaseUrl = 'https://jtexpress.my/tracking/';
+            const jtUrl = jtBaseUrl + encodeURIComponent(input);
+            const jtLink = document.getElementById('jt-tracking-link');
+            const jtCopyButton = document.getElementById('copy-jt-button');
+            if (jtLink) jtLink.href = jtUrl;
+            if (jtCopyButton) jtCopyButton.setAttribute('data-url', jtUrl);
+            if (jtRow) jtRow.classList.remove('hidden');
+
+            // Tracking.my
+            const trackingmyBaseUrl = 'https://tracking.my/jt/';
+            const trackingmyUrl = trackingmyBaseUrl + input;
+            const trackingmyLink = document.getElementById('trackingmy-tracking-link');
+            const trackingmyCopyButton = document.getElementById('copy-trackingmy-button');
+            if (trackingmyLink) trackingmyLink.href = trackingmyUrl;
+            if (trackingmyCopyButton) trackingmyCopyButton.setAttribute('data-url', trackingmyUrl);
+            if (trackingmyRow) trackingmyRow.classList.remove('hidden');
+
+            // 17track
+            const track17BaseUrl = 'https://t.17track.net/en#nums=';
+            const fc = '&fc=100079';
+            const track17Url = track17BaseUrl + encodeURIComponent(input) + fc;
+            const track17Link = document.getElementById('17track-tracking-link');
+            const track17CopyButton = document.getElementById('copy-17track-button');
+            if (track17Link) track17Link.href = track17Url;
+            if (track17CopyButton) track17CopyButton.setAttribute('data-url', track17Url);
+            if (track17Row) track17Row.classList.remove('hidden');
+
+            if (container) container.classList.remove('hidden');
+        }
+
+        function copyLink(service) {
+            let buttonId, serviceName;
+            if (service === 'jt') {
+                buttonId = 'copy-jt-button';
+                serviceName = 'J&T';
+            } else if (service === 'trackingmy') {
+                buttonId = 'copy-trackingmy-button';
+                serviceName = 'Tracking.my';
+            } else {
+                buttonId = 'copy-17track-button';
+                serviceName = '17track';
+            }
+            
+            const button = document.getElementById(buttonId);
+            if (button) {
+                const url = button.getAttribute('data-url');
+                navigator.clipboard.writeText(url).then(() => {
+                    alert(`${serviceName} link copied to clipboard!`);
+                });
+            }
+        }
+
+        // Auto-fill tracking number from URL on page load
+        window.addEventListener('load', () => {
+            const trackingNumber = getTrackingNumberFromURL();
+            if (trackingNumber && /^\d{12}$/.test(trackingNumber)) {
+                const input = document.getElementById('tracking-number');
+                if (input) {
+                    input.value = trackingNumber;
+                    trackPackage();
+                }
+            }
+        });
+
+        // Input listener for manual entry
+        const trackingInput = document.getElementById('tracking-number');
+        if (trackingInput) {
+            trackingInput.addEventListener('input', trackPackage);
+        }
+
+        // Dark mode toggle
+        const darkToggle = document.getElementById('dark-mode-toggle');
+        if (darkToggle) {
+            darkToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                darkToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
+            });
+        }
+    </script>
+</body>
+</html>
