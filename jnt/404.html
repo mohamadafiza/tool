@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting...</title>
+    <meta http-equiv="refresh" content="0; url=/tool/jnt.html?tracking=TRACKING_NUMBER">
+</head>
+<body>
+    <script>
+        const path = window.location.pathname;
+        const match = path.match(/\/jnt\/(\d{12})/i); // Capture 12-digit after /jnt/
+        if (match) {
+            const trackingNum = match[1];
+            // Redirect to query version
+            window.location.replace(`/tool/jnt.html?tracking=${trackingNum}`);
+        } else {
+            // Standard 404 if no match
+            document.body.innerHTML = '<h1>404 - Page Not Found</h1><p>The requested page could not be found.</p>';
+        }
+    </script>
+</body>
+</html>
