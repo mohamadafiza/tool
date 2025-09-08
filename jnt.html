@@ -191,18 +191,27 @@
             const url = new URL(window.location.href);
             let trackingNumber = null;
 
-            // Check query string (e.g., ?631854443060 or ?tracking=631854443060)
+            // Check query string (e.g., ?631858353745 or ?tracking=631858353745)
             const params = new URLSearchParams(url.search);
             if (params.has('tracking')) {
                 trackingNumber = params.get('tracking');
             } else if (url.search) {
-                // If no named parameter, try the first query value
                 trackingNumber = url.search.slice(1); // Remove '?'
             }
 
-            // Check path (e.g., /jnt/631854443060)
+            // Enhanced path check for /tool/jnt/631858353745 (last segment after /jnt/)
             if (!trackingNumber) {
-                const pathParts = url.pathname.split('/');
+                const pathParts = url.pathname.split('/').filter(part => part); // Remove empty parts
+                // If the path ends with /jnt/, look for the next segment as tracking number
+                const jntIndex = pathParts.indexOf('jnt');
+                if (jntIndex !== -1 && jntIndex < pathParts.length - 1) {
+                    // Check the segment right after 'jnt'
+                    const potentialTracking = pathParts[jntIndex + 1];
+                    if (/^\d{12}$/.test(potentialTracking)) {
+                        trackingNumber = potentialTracking;
+                    }
+                }
+                // Fallback: Check last non-empty part of entire path
                 const lastPart = pathParts[pathParts.length - 1];
                 if (/^\d{12}$/.test(lastPart)) {
                     trackingNumber = lastPart;
@@ -220,10 +229,10 @@
             const track17Row = document.querySelector('.track-row.s17track');
 
             if (!input || !/^\d{12}$/.test(input)) {
-                container.classList.add('hidden');
-                jtRow.classList.add('hidden');
-                trackingmyRow.classList.add('hidden');
-                track17Row.classList.add('hidden');
+                if (container) container.classList.add('hidden');
+                if (jtRow) jtRow.classList.add('hidden');
+                if (trackingmyRow) trackingmyRow.classList.add('hidden');
+                if (track17Row) track17Row.classList.add('hidden');
                 return;
             }
 
@@ -232,18 +241,18 @@
             const jtUrl = jtBaseUrl + encodeURIComponent(input);
             const jtLink = document.getElementById('jt-tracking-link');
             const jtCopyButton = document.getElementById('copy-jt-button');
-            jtLink.href = jtUrl;
-            jtCopyButton.setAttribute('data-url', jtUrl);
-            jtRow.classList.remove('hidden');
+            if (jtLink) jtLink.href = jtUrl;
+            if (jtCopyButton) jtCopyButton.setAttribute('data-url', jtUrl);
+            if (jtRow) jtRow.classList.remove('hidden');
 
             // Tracking.my
             const trackingmyBaseUrl = 'https://tracking.my/jt/';
             const trackingmyUrl = trackingmyBaseUrl + input;
             const trackingmyLink = document.getElementById('trackingmy-tracking-link');
             const trackingmyCopyButton = document.getElementById('copy-trackingmy-button');
-            trackingmyLink.href = trackingmyUrl;
-            trackingmyCopyButton.setAttribute('data-url', trackingmyUrl);
-            trackingmyRow.classList.remove('hidden');
+            if (trackingmyLink) trackingmyLink.href = trackingmyUrl;
+            if (trackingmyCopyButton) trackingmyCopyButton.setAttribute('data-url', trackingmyUrl);
+            if (trackingmyRow) trackingmyRow.classList.remove('hidden');
 
             // 17track
             const track17BaseUrl = 'https://t.17track.net/en#nums=';
@@ -251,11 +260,11 @@
             const track17Url = track17BaseUrl + encodeURIComponent(input) + fc;
             const track17Link = document.getElementById('17track-tracking-link');
             const track17CopyButton = document.getElementById('copy-17track-button');
-            track17Link.href = track17Url;
-            track17CopyButton.setAttribute('data-url', track17Url);
-            track17Row.classList.remove('hidden');
+            if (track17Link) track17Link.href = track17Url;
+            if (track17CopyButton) track17CopyButton.setAttribute('data-url', track17Url);
+            if (track17Row) track17Row.classList.remove('hidden');
 
-            container.classList.remove('hidden');
+            if (container) container.classList.remove('hidden');
         }
 
         function copyLink(service) {
@@ -272,29 +281,45 @@
             }
             
             const button = document.getElementById(buttonId);
-            const url = button.getAttribute('data-url');
-            navigator.clipboard.writeText(url).then(() => {
-                alert(`${serviceName} link copied to clipboard!`);
-            });
+            if (button) {
+                const url = button.getAttribute('data-url');
+                if (url) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        alert(`${serviceName} link copied to clipboard!`);
+                    }).catch(() => {
+                        alert('Copy failed - please copy manually.');
+                    });
+                }
+            }
         }
 
-        // Auto-fill tracking number from URL on page load
+        // Auto-fill on page load
         window.addEventListener('load', () => {
             const trackingNumber = getTrackingNumberFromURL();
             if (trackingNumber && /^\d{12}$/.test(trackingNumber)) {
                 const input = document.getElementById('tracking-number');
-                input.value = trackingNumber;
-                trackPackage();
+                if (input) {
+                    input.value = trackingNumber;
+                    input.focus(); // Optional: Focus on input for better UX
+                    trackPackage();
+                }
             }
         });
 
-        document.getElementById('tracking-number').addEventListener('input', trackPackage);
+        // Manual input listener
+        const trackingInput = document.getElementById('tracking-number');
+        if (trackingInput) {
+            trackingInput.addEventListener('input', trackPackage);
+        }
 
-        document.getElementById('dark-mode-toggle').addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const button = document.getElementById('dark-mode-toggle');
-            button.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
-        });
+        // Dark mode
+        const darkToggle = document.getElementById('dark-mode-toggle');
+        if (darkToggle) {
+            darkToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                darkToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
+            });
+        }
     </script>
 </body>
 </html>
