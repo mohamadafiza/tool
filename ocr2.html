@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Text Converter + Formatter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: #4a5566;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 25px;
+        }
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        #loading {
+            margin-top: 15px;
+            color: #666;
+            font-style: italic;
+            display: none;
+        }
+        .result-box {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        #result {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: none;
+            font-family: inherit;
+            font-size: 16px;
+            line-height: 1.6;
+            resize: vertical;
+            background: #fafafa;
+        }
+        .toolbar {
+            padding: 10px;
+            background: #f1f1f1;
+            border-top: 1px solid #ddd;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            background: #4a5568;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #2d3748;
+        }
+        button#copyBtn {
+            background: #48bb78;
+        }
+        button#copyBtn.copied {
+            background: #38a169;
+        }
+        @media (max-width: 600px) {
+            .toolbar { justify-content: center; }
+            button { flex: 1 1 45%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Image to Text Converter</h1>
+            <p>Upload gambar → dapat teks → format & salin mudah</p>
+        </div>
+        <div class="content">
+            <input type="file" id="imageInput" accept="image/*">
+            <div id="loading">Sedang proses OCR… ⏳</div>
+
+            <div class="result-box" id="resultContainer" style="display:none;">
+                <textarea id="result" placeholder="Teks dari gambar akan muncul di sini..."></textarea>
+                <div class="toolbar">
+                    <button id="copyBtn">📋 Copy to Clipboard</button>
+                    <button id="upperBtn">UPPERCASE</button>
+                    <button id="lowerBtn">lowercase</button>
+                    <button id="capitalBtn">Capitalize</button>
+                    <button id="boldBtn">Bold</button>
+                    <button id="italicBtn">Italic</button>
+                    <button id="clearBtn">Clear Format</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const resultTextarea = document.getElementById('result');
+        const resultContainer = document.getElementById('resultContainer');
+        const loading = document.getElementById('loading');
+        const copyBtn = document.getElementById('copyBtn');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            loading.style.display = 'block';
+            resultContainer.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('language', 'mal'); // kalau nak bahasa Melayu, tukar ke 'mal'
+            formData.append('isOverlayRequired', false);
+
+            fetch('https://api.ocr.space/parse/image', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'apikey': 'K88197064288957' // boleh tukar kalau nak guna key sendiri
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (data.ParsedResults && data.ParsedResults[0]) {
+                    const text = data.ParsedResults[0].ParsedText.trim();
+                    resultTextarea.value = text || 'Tiada teks dikesan.';
+                    resultContainer.style.display = 'block';
+                } else {
+                    resultTextarea.value = 'Error: ' + (data.ErrorMessage?.[0] || 'OCR gagal.');
+                    resultContainer.style.display = 'block';
+                }
+            })
+            .catch(err => {
+                loading.style.display = 'none';
+                resultTextarea.value = 'Error sambungan: ' + err.message;
+                resultContainer.style.display = 'block';
+            });
+        });
+
+        // ====== TOOLBAR FUNCTIONS ======
+        copyBtn.addEventListener('click', () => {
+            resultTextarea.select();
+            document.execCommand('copy');
+            copyBtn.textContent = '✓ Disalin!';
+            copyBtn.classList.add('copied');
+            setTimeout(() => {
+                copyBtn.textContent = '📋 Copy to Clipboard';
+                copyBtn.classList.remove('copied');
+            }, 2000);
+        });
+
+        document.getElementById('upperBtn').addEventListener('click', () => {
+            resultTextarea.value = resultTextarea.value.toUpperCase();
+        });
+
+        document.getElementById('lowerBtn').addEventListener('click', () => {
+            resultTextarea.value = resultTextarea.value.toLowerCase();
+        });
+
+        document.getElementById('capitalBtn').addEventListener('click', () => {
+            resultTextarea.value = resultTextarea.value.replace(/\b\w/g, l => l.toUpperCase());
+        });
+
+        document.getElementById('boldBtn').addEventListener('click', () => {
+            wrapSelectedText('**', '**'); // Markdown style bold
+        });
+
+        document.getElementById('italicBtn').addEventListener('click', () => {
+            wrapSelectedText('*', '*');
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            const text = resultTextarea.value;
+            // buang markdown biasa + extra whitespace
+            const clean = text.replace(/\*\*|\*|_+/g, '').replace(/\s+/g, ' ').trim();
+            resultTextarea.value = clean;
+        });
+
+        // Helper untuk wrap teks yang dipilih
+        function wrapSelectedText(before, after) {
+            const start = resultTextarea.selectionStart;
+            const end = resultTextarea.selectionEnd;
+            const selected = resultTextarea.value.substring(start, end) || resultTextarea.value;
+            const wrapped = before + selected + after;
+            
+            if (start === end) {
+                // kalau tak ada selection, insert di cursor
+                resultTextarea.value = 
+                    resultTextarea.value.slice(0, start) + 
+                    wrapped + 
+                    resultTextarea.value.slice(end);
+                resultTextarea.focus();
+                resultTextarea.setSelectionRange(start + before.length, start + before.length + selected.length);
+            } else {
+                resultTextarea.value = 
+                    resultTextarea.value.slice(0, start) + 
+                    wrapped + 
+                    resultTextarea.value.slice(end);
+                resultTextarea.focus();
+            }
+        }
+    </script>
+</body>
+</html>
