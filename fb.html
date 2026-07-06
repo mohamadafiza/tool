@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Pemendek URL Facebook</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px 20px 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #1b1f23;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
+
+        .subhead {
+            color: #606770;
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            line-height: 1.4;
+            border-left: 3px solid #1877f2;
+            padding-left: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1rem;
+            font-family: inherit;
+            border: 1.5px solid #dddfe2;
+            border-radius: 16px;
+            resize: vertical;
+            min-height: 90px;
+            background: #f7f8fa;
+            transition: border 0.15s, box-shadow 0.15s;
+            color: #1b1f23;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #1877f2;
+            box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.2);
+            background: white;
+        }
+
+        textarea::placeholder {
+            color: #8a8d91;
+            font-size: 0.95rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1 1 auto;
+            min-width: 100px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 40px;
+            background: #e4e6eb;
+            color: #1b1f23;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .btn-primary {
+            background: #1877f2;
+            color: white;
+            box-shadow: 0 2px 6px rgba(24, 119, 242, 0.25);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.96);
+            background: #1464d9;
+        }
+
+        .btn-secondary {
+            background: #e7f3ff;
+            color: #1877f2;
+        }
+
+        .btn-secondary:active {
+            background: #d4e7fc;
+            transform: scale(0.96);
+        }
+
+        .btn-success {
+            background: #42b72a;
+            color: white;
+        }
+
+        .btn-success:active {
+            background: #36a420;
+            transform: scale(0.96);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            pointer-events: none;
+            transform: none;
+        }
+
+        .output-area {
+            margin-top: 24px;
+            background: #f7f8fa;
+            border-radius: 18px;
+            padding: 16px 18px;
+            border: 1px solid #e4e6eb;
+            display: none;
+            word-break: break-all;
+        }
+
+        .output-area.show {
+            display: block;
+            animation: fadeSlide 0.25s ease;
+        }
+
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .output-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #606770;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .output-url {
+            font-size: 0.95rem;
+            color: #1b1f23;
+            background: white;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid #dddfe2;
+            margin: 6px 0 14px;
+            line-height: 1.5;
+            overflow-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .status-message {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: #606770;
+            min-height: 1.5em;
+        }
+
+        .status-message.error {
+            color: #d93025;
+            font-weight: 500;
+        }
+
+        .status-message.success {
+            color: #1e8e3e;
+        }
+
+        .footnote {
+            margin-top: 22px;
+            font-size: 0.8rem;
+            color: #8a8d91;
+            text-align: center;
+            border-top: 1px solid #e4e6eb;
+            padding-top: 18px;
+        }
+
+        /* mobile touch improvements */
+        @media (max-width: 480px) {
+            .card { padding: 20px 16px 24px; }
+            h1 { font-size: 1.5rem; }
+            .btn { padding: 16px 12px; min-width: 80px; font-size: 0.95rem; }
+            textarea { min-height: 75px; font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>
+        <span>🔗</span> Pemendek FB
+    </h1>
+    <div class="subhead">
+        Tampal pautan Facebook — kami akan cari URL sebenar & pendekkan untuk anda.
+    </div>
+
+    <div class="input-group">
+        <textarea id="inputUrl" placeholder="Paste Facebook URL di sini...&#10;Contoh: https://www.facebook.com/share/p/...">https://www.facebook.com/share/p/19HAEcFzWq/</textarea>
+        <div class="button-group">
+            <button class="btn btn-secondary" id="pasteBtn">📋 Tampal</button>
+            <button class="btn btn-primary" id="shortenBtn">⚡ Pendekkan</button>
+        </div>
+    </div>
+
+    <div class="output-area" id="outputArea">
+        <div class="output-label">✅ URL Sebenar (Pendek)</div>
+        <div class="output-url" id="resultUrl">https://www.facebook.com/permalink.php?story_fbid=...&id=...</div>
+        <div class="output-actions">
+            <button class="btn btn-success" id="copyBtn">📄 Salin</button>
+            <button class="btn btn-secondary" id="resetBtn">↺ Reset</button>
+        </div>
+        <div class="status-message" id="statusMsg"></div>
+    </div>
+
+    <div class="footnote">
+        Tiada data disimpan. Hanya tuan rumah anda yang memproses permintaan.
+    </div>
+</div>
+
+<script>
+    (function() {
+        "use strict";
+
+        // DOM elements
+        const inputEl = document.getElementById('inputUrl');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const shortenBtn = document.getElementById('shortenBtn');
+        const outputArea = document.getElementById('outputArea');
+        const resultUrlEl = document.getElementById('resultUrl');
+        const copyBtn = document.getElementById('copyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const statusMsg = document.getElementById('statusMsg');
+
+        // Helper: set status message
+        function setStatus(msg, type = '') {
+            statusMsg.textContent = msg;
+            statusMsg.className = 'status-message' + (type ? ' ' + type : '');
+        }
+
+        // Helper: show output with URL
+        function showOutput(url) {
+            resultUrlEl.textContent = url;
+            outputArea.classList.add('show');
+            setStatus('URL sedia untuk disalin.', 'success');
+        }
+
+        // Helper: hide output
+        function hideOutput() {
+            outputArea.classList.remove('show');
+            setStatus('', '');
+        }
+
+        // Clean & validate Facebook URL
+        function cleanFacebookUrl(raw) {
+            if (!raw) return null;
+            let url = raw.trim();
+            if (!url) return null;
+            // if no protocol, add https://
+            if (!/^https?:\/\//i.test(url)) {
+                url = 'https://' + url;
+            }
+            try {
+                const parsed = new URL(url);
+                // Must be facebook.com domain
+                if (!parsed.hostname.includes('facebook.com')) {
+                    return null;
+                }
+                // Remove tracking parameters (fbclid, __cft__, etc) but keep path & story_fbid
+                const allowedParams = ['story_fbid', 'id', 'permalink', 'multi_permalinks', 'group_id'];
+                const newParams = new URLSearchParams();
+                for (const key of parsed.searchParams.keys()) {
+                    if (allowedParams.includes(key)) {
+                        newParams.set(key, parsed.searchParams.get(key));
+                    }
+                }
+                parsed.search = newParams.toString();
+                // Rebuild clean URL
+                return parsed.toString();
+            } catch (_) {
+                return null;
+            }
+        }
+
+        // --- Main shorten logic ---
+        async function shortenUrl() {
+            const rawInput = inputEl.value;
+            if (!rawInput.trim()) {
+                setStatus('Sila tampal pautan Facebook dahulu.', 'error');
+                hideOutput();
+                return;
+            }
+
+            // Clean the URL first
+            const cleanInput = cleanFacebookUrl(rawInput);
+            if (!cleanInput) {
+                setStatus('URL tidak sah. Pastikan ia pautan Facebook yang betul.', 'error');
+                hideOutput();
+                return;
+            }
+
+            // Update input field with cleaned URL for transparency
+            inputEl.value = cleanInput;
+
+            // --- Strategy: 
+            // 1. If already a permalink with story_fbid & id, show it directly.
+            // 2. Else, fetch the page to get the canonical URL or resolve redirects.
+            // Because of CORS, we can't fetch Facebook directly from browser.
+            // So we use a simple no-cors fetch to at least get the final URL from redirects? 
+            // Actually fetch with 'no-cors' won't give us the redirected URL due to opaque response.
+            // So we'll simulate by using the fact that share links and group links often redirect to the permalink.
+            // We'll do a lightweight "try" by using a hidden iframe? Not reliable and user-hostile.
+            // The most reliable client-side method: use the Facebook API? Not available.
+            // So we'll implement a "best effort": if it's a share link, we try to derive the permalink pattern.
+            // For groups, we extract the post id from multi_permalinks.
+            // For share links, we can't get the real ID without server-side.
+            // So we will present the cleaned URL and note that for some links, we need server-side fetch.
+            // But the user asked for "beli link fb url sebenar" – we'll do our best.
+            // We'll implement a simple pattern extraction.
+
+            let finalUrl = cleanInput;
+
+            // Detect share link: /share/p/...
+            if (cleanInput.includes('/share/p/')) {
+                // This is a share link – we cannot extract story_fbid without following redirect.
+                // We'll instruct user to use "Paste" from browser's address bar after clicking share.
+                setStatus('⚠️ Pautan kongsi (share) tidak mengandungi ID sebenar. Cuba buka pautan di pelayar, salin URL dari bar alamat, dan tampal semula.', 'error');
+                hideOutput();
+                // But we'll still show cleaned input as fallback
+                // Actually we can try to get the redirected URL by using a HEAD request? Not possible due to CORS.
+                // So we'll just display the cleaned input and let the user know.
+                finalUrl = cleanInput;
+                showOutput(finalUrl);
+                setStatus('ℹ️ URL ini mungkin pautan kongsi. Untuk dapatkan pautan sebenar, buka di pelayar dan salin dari bar alamat.', 'error');
+                return;
+            }
+
+            // If it's a groups link with multi_permalinks, we can extract the post id
+            if (cleanInput.includes('/groups/') && cleanInput.includes('multi_permalinks=')) {
+                const urlObj = new URL(cleanInput);
+                const multi = urlObj.searchParams.get('multi_permalinks');
+                if (multi) {
+                    // Usually it's a single number
+                    const postId = multi.split(',')[0]; // take first
+                    if (postId) {
+                        // Try to find group id
+                        const pathParts = urlObj.pathname.split('/');
+                        let groupId = null;
+                        for (let i = 0; i < pathParts.length; i++) {
+                            if (pathParts[i] === 'groups' && i+1 < pathParts.length) {
+                                groupId = pathParts[i+1];
+                                break;
+                            }
+                        }
+                        if (groupId && postId) {
+                            // Construct permalink: https://www.facebook.com/permalink.php?story_fbid=pfbid...&id=group_id
+                            // But we don't know the pfbid, we only have the numeric post id.
+                            // We'll use the group post format: https://www.facebook.com/groups/group_id/posts/post_id/
+                            // That is a valid permalink.
+                            finalUrl = `https://www.facebook.com/groups/${groupId}/posts/${postId}/`;
+                            showOutput(finalUrl);
+                            setStatus('✅ URL kumpulan dipendekkan ke pautan pos.', 'success');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // If it's a standard post with story_fbid and id, we keep it.
+            if (cleanInput.includes('story_fbid=') && cleanInput.includes('id=')) {
+                finalUrl = cleanInput;
+                showOutput(finalUrl);
+                setStatus('✅ URL sebenar (permalink) sedia.', 'success');
+                return;
+            }
+
+            // If it's a post from a page or profile (like /mkinibm/posts/...)
+            if (cleanInput.match(/facebook\.com\/[^/]+\/posts\/\d+/)) {
+                // This is already a pretty clean URL, but we can try to convert to permalink?
+                // Actually the /posts/ URL is also a valid permalink.
+                finalUrl = cleanInput;
+                showOutput(finalUrl);
+                setStatus('✅ URL pos yang sah.', 'success');
+                return;
+            }
+
+            // Fallback: show cleaned URL
+            finalUrl = cleanInput;
+            showOutput(finalUrl);
+            setStatus('ℹ️ URL ini telah dibersihkan daripada parameter tambahan.', 'info');
+        }
+
+        // --- Event Listeners ---
+
+        // Paste button: request clipboard permission and paste
+        pasteBtn.addEventListener('click', async function() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    inputEl.value = text;
+                    setStatus('📋 Pautan dari clipboard ditampal.', 'success');
+                    hideOutput(); // Clear previous output
+                    // Auto-trigger shorten?
+                    // User can click shorten manually.
+                }
+            } catch (err) {
+                setStatus('❌ Gagal membaca clipboard. Sila tampal secara manual (Ctrl+V / tekan lama).', 'error');
+                // Fallback: focus on textarea
+                inputEl.focus();
+            }
+        });
+
+        // Shorten button
+        shortenBtn.addEventListener('click', shortenUrl);
+
+        // Copy button
+        copyBtn.addEventListener('click', async function() {
+            const url = resultUrlEl.textContent;
+            if (!url) return;
+            try {
+                await navigator.clipboard.writeText(url);
+                setStatus('✅ Disalin ke clipboard!', 'success');
+                // temporary change button text
+                const original = copyBtn.textContent;
+                copyBtn.textContent = '✅ Disalin!';
+                setTimeout(() => {
+                    copyBtn.textContent = original;
+                }, 1500);
+            } catch (_) {
+                // Fallback: select text and use document.execCommand
+                const range = document.createRange();
+                range.selectNode(resultUrlEl);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                setStatus('✅ Disalin (fallback).', 'success');
+                window.getSelection().removeAllRanges();
+            }
+        });
+
+        // Reset button: clear output and input
+        resetBtn.addEventListener('click', function() {
+            inputEl.value = '';
+            hideOutput();
+            setStatus('', '');
+            inputEl.focus();
+        });
+
+        // Also allow "Enter" to trigger shorten? But we have multi-line textarea, so Ctrl+Enter maybe.
+        inputEl.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                shortenBtn.click();
+            }
+        });
+
+        // Initial example: pre-fill with a sample share link
+        // The user gave example: https://www.facebook.com/share/p/19HAEcFzWq/
+        // We'll auto-populate on load.
+        window.addEventListener('load', function() {
+            // Prefill with the example share link, but let user change.
+            if (inputEl.value.trim() === '') {
+                inputEl.value = 'https://www.facebook.com/share/p/19HAEcFzWq/';
+            }
+            // Optionally auto-shorten? Better to let user click.
+            setStatus('Tampal pautan & klik "Pendekkan".', '');
+        });
+
+        console.log('FB Shortener ready. (Client-side, best-effort)');
+    })();
+</script>
+
+</body>
+</html>
